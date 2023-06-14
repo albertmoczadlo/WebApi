@@ -33,6 +33,10 @@ public class RestaurantDbContext : DbContext
             .Property(d => d.Name)
             .IsRequired();
 
+        modelBuilder.Entity<Dish>()
+            .Property(b => b.Price)
+            .HasPrecision(10, 2);
+
         modelBuilder.Entity<Address>()
             .Property(a => a.City)
             .IsRequired()

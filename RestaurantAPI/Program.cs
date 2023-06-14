@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using RestaurantAPI.Entities;
+
 namespace RestaurantAPI;
 
 public class Program
@@ -7,6 +10,9 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddDbContext<RestaurantDbContext>(
+            options=>options.UseSqlServer(builder.Configuration.GetConnectionString(
+                "RestaurantDbContextConnection")?? throw new InvalidOperationException("Connection not found")));
 
         builder.Services.AddControllers();
 
@@ -14,7 +20,7 @@ public class Program
 
         // Configure the HTTP request pipeline.
 
-        app.UseHttpsRedirection(); 
+        app.UseHttpsRedirection();
 
         app.MapControllers();
 

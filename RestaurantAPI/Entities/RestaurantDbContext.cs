@@ -16,6 +16,10 @@ public class RestaurantDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Restaurant>()
+            .Property(c => c.ContactNumber)
+            .IsRequired(false);
+
         modelBuilder.Entity<User>()
             .Property(u => u.Email)
             .IsRequired();

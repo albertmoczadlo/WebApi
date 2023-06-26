@@ -363,3 +363,4 @@ MigrationBackup/
 FodyWeavers.xsd
 /RestaurantAPI/appsettings.Development.json
 /RestaurantAPI/appsettings.json
+/RestaurantAPI/Properties/launchSettings.json

@@ -22,7 +22,10 @@ namespace RestaurantAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
         {
-            var restaurants = await _dbContext.Restaurants.ToListAsync();
+            var restaurants = await _dbContext.Restaurants
+                .Include(x=>x.Address)
+                .Include(x=>x.Dishes)
+                .ToListAsync();
 
             var restaurantDtos = _mapper.Map<RestaurantDto>(restaurants);
 
@@ -33,14 +36,19 @@ namespace RestaurantAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Restaurant>> GetById([FromRoute] int id)
         {
-            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(i => i.Id == id);
+            var restaurant = await _dbContext.Restaurants
+                .Include(x => x.Address)
+                .Include(x => x.Dishes)
+                .FirstOrDefaultAsync(i => i.Id == id);
 
             if (restaurant == null)
             {
                 return NotFound();
             }
 
-            return restaurant;
+            var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
+
+            return Ok(restaurant);
         }
     }
 }

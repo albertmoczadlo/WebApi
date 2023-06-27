@@ -17,10 +17,9 @@ public class Program
         builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
-
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
         var app = builder.Build();
-        // Configure the HTTP request pipeline.
 
         using (var scope = app.Services.CreateScope())
         {
@@ -37,24 +36,6 @@ public class Program
                 options.RoutePrefix = string.Empty;
             });
         }
-
-        //app.UseSwagger();
-        //app.UseSwaggerUI(c => {
-        //    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-        //    c.RoutePrefix = string.Empty;
-        //});
-
-        //if (app.Environment.IsDevelopment())
-        //{
-        //    app.UseSwagger();
-        //    app.UseSwaggerUI();
-        //}
-
-        //app.UseSwaggerUI(options =>
-        //{
-        //    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Restaurant API");
-        //    options.RoutePrefix = string.Empty;
-        //});
 
         app.UseHttpsRedirection();
 

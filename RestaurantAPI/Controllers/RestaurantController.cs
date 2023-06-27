@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Models;
 
 namespace RestaurantAPI.Controllers
 {
@@ -9,24 +11,31 @@ namespace RestaurantAPI.Controllers
     public class RestaurantController : ControllerBase
     {
         private readonly RestaurantDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public RestaurantController(RestaurantDbContext dbContext)
+        public RestaurantController(RestaurantDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Restaurant>>> GetAll()
+        public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
         {
-            return await _dbContext.Restaurants.ToListAsync();
+            var restaurants = await _dbContext.Restaurants.ToListAsync();
+
+            var restaurantDtos = _mapper.Map<RestaurantDto>(restaurants);
+
+            return Ok(restaurantDtos);
+
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Restaurant>> GetById([FromRoute]int id)
+        public async Task<ActionResult<Restaurant>> GetById([FromRoute] int id)
         {
-            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(i=>i.Id == id);
+            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(i => i.Id == id);
 
-            if(restaurant == null)
+            if (restaurant == null)
             {
                 return NotFound();
             }

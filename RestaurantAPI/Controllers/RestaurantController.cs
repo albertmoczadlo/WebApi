@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
@@ -27,7 +28,7 @@ namespace RestaurantAPI.Controllers
                 .Include(x=>x.Dishes)
                 .ToListAsync();
 
-            var restaurantDtos = _mapper.Map<RestaurantDto>(restaurants);
+            var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 
             return Ok(restaurantDtos);
 
@@ -49,6 +50,16 @@ namespace RestaurantAPI.Controllers
             var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
 
             return Ok(restaurant);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
+        {
+            var restaurant = _mapper.Map<Restaurant>(dto);
+            await _dbContext.Restaurants.AddAsync(restaurant);
+            _dbContext.SaveChanges();
+
+            return Created($"/api/restaurant/{restaurant.Id}", null);
         }
     }
 }

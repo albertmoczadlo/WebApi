@@ -4,7 +4,7 @@ namespace RestaurantAPI.Interfaces
 {
     public interface IRestaurantService
     {
-        Task Create(CreateRestaurantDto dto);
+        Task<int> Create(CreateRestaurantDto dto);
         Task<IEnumerable<RestaurantDto>> GetAll();
         Task<RestaurantDto> GetById(int id);
     }

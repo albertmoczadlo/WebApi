@@ -12,26 +12,17 @@ namespace RestaurantAPI.Controllers
     [Route("api/restaurant")]
     public class RestaurantController : ControllerBase
     {
-        private readonly RestaurantDbContext _dbContext;
-        private readonly IMapper _mapper;
         private readonly IRestaurantService _service;
 
-        public RestaurantController(RestaurantDbContext dbContext, IMapper mapper, IRestaurantService service)
+        public RestaurantController(IRestaurantService service)
         {
-            _dbContext = dbContext;
-            _mapper = mapper;
             _service = service;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
         {
-            var restaurants = await _dbContext.Restaurants
-                .Include(x=>x.Address)
-                .Include(x=>x.Dishes)
-                .ToListAsync();
-
-            var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
+            var restaurantDtos = await _service.GetAll();
 
             return Ok(restaurantDtos);
 
@@ -40,10 +31,7 @@ namespace RestaurantAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Restaurant>> GetById([FromRoute] int id)
         {
-            var restaurant = await _dbContext.Restaurants
-                .Include(x => x.Address)
-                .Include(x => x.Dishes)
-                .FirstOrDefaultAsync(i => i.Id == id);
+            var restaurant = await _service.GetById(id);
 
             return Ok(restaurant);
         }
@@ -56,7 +44,9 @@ namespace RestaurantAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            return Created($"/api/restaurant/{restaurant.Id}", null);
+            var id = _service.Create(dto);
+
+            return Created($"/api/restaurant/{id}", null);
         }
     }
 }

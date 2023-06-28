@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
@@ -22,9 +23,12 @@ namespace RestaurantAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<RestaurantDto>>> GetAll()
         {
-            var restaurants = await _dbContext.Restaurants.ToListAsync();
+            var restaurants = await _dbContext.Restaurants
+                .Include(x=>x.Address)
+                .Include(x=>x.Dishes)
+                .ToListAsync();
 
-            var restaurantDtos = _mapper.Map<RestaurantDto>(restaurants);
+            var restaurantDtos = _mapper.Map<List<RestaurantDto>>(restaurants);
 
             return Ok(restaurantDtos);
 
@@ -33,14 +37,34 @@ namespace RestaurantAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Restaurant>> GetById([FromRoute] int id)
         {
-            var restaurant = await _dbContext.Restaurants.FirstOrDefaultAsync(i => i.Id == id);
+            var restaurant = await _dbContext.Restaurants
+                .Include(x => x.Address)
+                .Include(x => x.Dishes)
+                .FirstOrDefaultAsync(i => i.Id == id);
 
             if (restaurant == null)
             {
                 return NotFound();
             }
 
-            return restaurant;
+            var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
+
+            return Ok(restaurant);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
+        {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var restaurant = _mapper.Map<Restaurant>(dto);
+            await _dbContext.Restaurants.AddAsync(restaurant);
+            _dbContext.SaveChanges();
+
+            return Created($"/api/restaurant/{restaurant.Id}", null);
         }
     }
 }

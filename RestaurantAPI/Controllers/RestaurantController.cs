@@ -55,6 +55,11 @@ namespace RestaurantAPI.Controllers
         [HttpPost]
         public async Task<ActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
         {
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var restaurant = _mapper.Map<Restaurant>(dto);
             await _dbContext.Restaurants.AddAsync(restaurant);
             _dbContext.SaveChanges();

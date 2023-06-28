@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Interfaces;
 using RestaurantAPI.Models;
 
 namespace RestaurantAPI.Controllers
@@ -13,11 +14,13 @@ namespace RestaurantAPI.Controllers
     {
         private readonly RestaurantDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly IRestaurantService _service;
 
-        public RestaurantController(RestaurantDbContext dbContext, IMapper mapper)
+        public RestaurantController(RestaurantDbContext dbContext, IMapper mapper, IRestaurantService service)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _service = service;
         }
 
         [HttpGet]
@@ -42,13 +45,6 @@ namespace RestaurantAPI.Controllers
                 .Include(x => x.Dishes)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
-            if (restaurant == null)
-            {
-                return NotFound();
-            }
-
-            var restaurantDto = _mapper.Map<RestaurantDto>(restaurant);
-
             return Ok(restaurant);
         }
 
@@ -59,10 +55,6 @@ namespace RestaurantAPI.Controllers
             {
                 return BadRequest(ModelState);
             }
-
-            var restaurant = _mapper.Map<Restaurant>(dto);
-            await _dbContext.Restaurants.AddAsync(restaurant);
-            _dbContext.SaveChanges();
 
             return Created($"/api/restaurant/{restaurant.Id}", null);
         }

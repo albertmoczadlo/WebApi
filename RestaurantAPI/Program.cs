@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
+using RestaurantAPI.Interfaces;
+using RestaurantAPI.Services;
 
 namespace RestaurantAPI;
 
@@ -18,6 +20,7 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Services.AddScoped<IRestaurantService, RestaurantService>();
 
         var app = builder.Build();
 

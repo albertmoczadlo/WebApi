@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Interfaces;
@@ -51,6 +52,35 @@ namespace RestaurantAPI.Services
             _dbContext.SaveChanges();
 
             return restaurant.Id;
+        }
+
+        public async Task<bool> Delete(int id)
+        {
+            var result = await _dbContext.Restaurants
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (result == null) return false;
+
+            _dbContext.Restaurants.Remove(result);
+            _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> Update(int id, UpdateRestaurantDto dto)
+        {
+            var restaurant = await _dbContext.Restaurants
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if(restaurant == null) return false;
+
+            restaurant.Name = dto.Name;
+            restaurant.Description = dto.Description;
+            restaurant.HasDelivery = dto.HasDelivery;
+
+            _dbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

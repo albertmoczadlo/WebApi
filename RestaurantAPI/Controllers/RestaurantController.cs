@@ -1,7 +1,5 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Interfaces;
 using RestaurantAPI.Models;
@@ -25,7 +23,6 @@ namespace RestaurantAPI.Controllers
             var restaurantDtos = await _service.GetAll();
 
             return Ok(restaurantDtos);
-
         }
 
         [HttpGet("{id}")]
@@ -47,6 +44,32 @@ namespace RestaurantAPI.Controllers
             var id = _service.Create(dto);
 
             return Created($"/api/restaurant/{id}", null);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> Delete([FromRoute] int id)
+        {
+             var isDeleted = await _service.Delete(id);
+
+            if(isDeleted) return NoContent();
+
+            return NotFound();
+
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update([FromBody] UpdateRestaurantDto dto, [FromRoute] int id)
+        {
+            if(!ModelState.IsValid) { return BadRequest(ModelState); }
+
+            var isUpdated = await _service.Update(id, dto);
+
+            if (!isUpdated)
+            {
+                return NotFound();
+            }
+
+            return Ok();
         }
     }
 }

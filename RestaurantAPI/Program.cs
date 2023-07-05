@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using NLog.Web;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Interfaces;
 using RestaurantAPI.Services;
@@ -21,6 +22,12 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
+
+        // Configure NLog
+        builder.Logging.ClearProviders();
+        builder.Logging.SetMinimumLevel(LogLevel.Trace);
+        builder.Host.UseNLog();
+
 
         var app = builder.Build();
 

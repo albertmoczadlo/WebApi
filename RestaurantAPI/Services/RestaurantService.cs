@@ -11,11 +11,14 @@ namespace RestaurantAPI.Services
     {
         private readonly RestaurantDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly ILogger<RestaurantService> _logger;
 
-        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper)
+        public RestaurantService(RestaurantDbContext dbContext, IMapper mapper,
+            ILogger<RestaurantService> logger)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IEnumerable<RestaurantDto>> GetAll()
@@ -56,6 +59,8 @@ namespace RestaurantAPI.Services
 
         public async Task<bool> Delete(int id)
         {
+            _logger.LogWarning($"Restaurant whith id: {id} delete action invoked");
+
             var result = await _dbContext.Restaurants
                 .FirstOrDefaultAsync(i => i.Id == id);
 

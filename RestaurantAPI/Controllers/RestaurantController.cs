@@ -34,7 +34,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
+        public async Task<ActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
         {
             if(!ModelState.IsValid)
             {
@@ -47,7 +47,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        public async Task<ActionResult> Delete([FromRoute] int id)
         {
              var isDeleted = await _service.Delete(id);
 
@@ -58,7 +58,7 @@ namespace RestaurantAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] UpdateRestaurantDto dto, [FromRoute] int id)
+        public async Task<ActionResult> Update([FromBody] UpdateRestaurantDto dto, [FromRoute] int id)
         {
             if(!ModelState.IsValid) { return BadRequest(ModelState); }
 

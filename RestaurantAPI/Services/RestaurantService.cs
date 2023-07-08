@@ -59,7 +59,7 @@ namespace RestaurantAPI.Services
 
         public async Task<bool> Delete(int id)
         {
-            _logger.LogWarning($"Restaurant whith id: {id} delete action invoked");
+            _logger.LogError($"Restaurant whith id: {id} delete action invoked");
 
             var result = await _dbContext.Restaurants
                 .FirstOrDefaultAsync(i => i.Id == id);

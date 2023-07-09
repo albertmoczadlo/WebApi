@@ -59,7 +59,6 @@ namespace RestaurantAPI.Services
 
         public async Task<bool> Delete(int id)
         {
-            _logger.LogWarning($"Restaurant whith id: {id} delete action invoked");
 
             var result = await _dbContext.Restaurants
                 .FirstOrDefaultAsync(i => i.Id == id);
@@ -67,7 +66,7 @@ namespace RestaurantAPI.Services
             if (result == null) return false;
 
             _dbContext.Restaurants.Remove(result);
-            _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }
@@ -83,7 +82,7 @@ namespace RestaurantAPI.Services
             restaurant.Description = dto.Description;
             restaurant.HasDelivery = dto.HasDelivery;
 
-            _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync();
 
             return true;
         }

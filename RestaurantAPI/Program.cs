@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using NLog.Web;
 using RestaurantAPI.Entities;
 using RestaurantAPI.Interfaces;
+using RestaurantAPI.Middlewar;
 using RestaurantAPI.Services;
 
 namespace RestaurantAPI;
@@ -13,6 +14,7 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddScoped<ErrorHandlingMiddelwer>();
         builder.Services.AddDbContext<RestaurantDbContext>(
             options=>options.UseSqlServer(builder.Configuration.GetConnectionString(
                 "RestaurantDbContextConnection")?? throw new InvalidOperationException("Connection not found")));
@@ -22,7 +24,7 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
-
+        //builder.Services.AddLogging();
         // Configure NLog
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
@@ -47,6 +49,8 @@ public class Program
             });
         }
 
+
+        app.UseMiddleware<ErrorHandlingMiddelwer>();
         app.UseHttpsRedirection();
 
         app.MapControllers();

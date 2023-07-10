@@ -49,7 +49,6 @@ public class Program
             });
         }
 
-
         app.UseMiddleware<ErrorHandlingMiddelwer>();
         app.UseHttpsRedirection();
 

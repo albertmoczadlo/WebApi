@@ -1,14 +1,14 @@
 ﻿
 using RestaurantAPI.Exceptions;
 
-namespace RestaurantAPI.Middlewar
+namespace RestaurantAPI.Middleware
 {
-    public class ErrorHandlingMiddelwer : IMiddleware
+    public class ErrorHandlingMiddlewere : IMiddleware
     {
 
-        private readonly ILogger<ErrorHandlingMiddelwer> _logger;
+        private readonly ILogger<ErrorHandlingMiddlewere> _logger;
 
-        public ErrorHandlingMiddelwer(ILogger<ErrorHandlingMiddelwer> logger)
+        public ErrorHandlingMiddlewere(ILogger<ErrorHandlingMiddlewere> logger)
         {
             _logger = logger;
         }

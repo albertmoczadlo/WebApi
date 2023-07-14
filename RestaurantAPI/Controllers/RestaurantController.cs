@@ -36,11 +36,6 @@ namespace RestaurantAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateRestaurant([FromBody]  CreateRestaurantDto dto)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var id = _service.Create(dto);
 
             return Created($"/api/restaurant/{id}", null);
@@ -49,25 +44,16 @@ namespace RestaurantAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-             var isDeleted = await _service.Delete(id);
+            await _service.Delete(id);
 
-            if(isDeleted) return NoContent();
-
-            return NotFound();
+            return NoContent();
 
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] UpdateRestaurantDto dto, [FromRoute] int id)
         {
-            if(!ModelState.IsValid) { return BadRequest(ModelState); }
-
-            var isUpdated = await _service.Update(id, dto);
-
-            if (!isUpdated)
-            {
-                return NotFound();
-            }
+            await _service.Update(id, dto);
 
             return Ok();
         }

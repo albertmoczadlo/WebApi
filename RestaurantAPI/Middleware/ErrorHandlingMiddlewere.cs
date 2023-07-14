@@ -1,12 +1,14 @@
 ﻿
-namespace RestaurantAPI.Middlewar
+using RestaurantAPI.Exceptions;
+
+namespace RestaurantAPI.Middleware
 {
-    public class ErrorHandlingMiddelwer : IMiddleware
+    public class ErrorHandlingMiddlewere : IMiddleware
     {
 
-        private readonly ILogger<ErrorHandlingMiddelwer> _logger;
+        private readonly ILogger<ErrorHandlingMiddlewere> _logger;
 
-        public ErrorHandlingMiddelwer(ILogger<ErrorHandlingMiddelwer> logger)
+        public ErrorHandlingMiddlewere(ILogger<ErrorHandlingMiddlewere> logger)
         {
             _logger = logger;
         }
@@ -16,6 +18,11 @@ namespace RestaurantAPI.Middlewar
             try
             {
                 await next.Invoke(context);
+            }
+            catch(NotFoundException notFoundException)
+            {
+                context.Response.StatusCode = 404;
+                await context.Response.WriteAsync(notFoundException.Message);
             }
             catch (Exception ex)
             {

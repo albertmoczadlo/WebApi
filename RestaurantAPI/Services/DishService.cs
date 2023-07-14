@@ -28,6 +28,8 @@ namespace RestaurantAPI.Services
 
             var dishEntity = _mapper.Map<Dish>(dto);
 
+            dishEntity.RestaurantId = restaurantId;
+
             _dbContext.Dishes.Add(dishEntity);
             await _dbContext.SaveChangesAsync();
 

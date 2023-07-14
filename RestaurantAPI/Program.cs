@@ -26,6 +26,7 @@ public class Program
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<IRestaurantService, RestaurantService>();
         builder.Services.AddScoped<RequestTimeMiddleware>();
+        builder.Services.AddScoped<IDishService, DishService>();
 
         builder.Logging.ClearProviders();
         builder.Logging.SetMinimumLevel(LogLevel.Trace);

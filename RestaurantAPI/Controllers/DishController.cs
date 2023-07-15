@@ -20,7 +20,23 @@ namespace RestaurantAPI.Controllers
         {
             var newDishId = _dishService.Create(restaurantId, dto);
 
-            return Created($"api/{restaurantId}/dish/{newDishId}",null);
+            return Created($"api/restaurant/{restaurantId}/dish/{newDishId}",null);
+        }
+
+        [HttpGet("{dishId}")]
+        public async Task<ActionResult<DishDto>> Get([FromRoute] int restaurantId, [FromRoute]int dishId)
+        {
+            var dish = await _dishService.GetDishById(restaurantId,dishId);
+
+            return Ok(dish);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<DishDto>>> Get([FromRoute] int restaurantId)
+        {
+            var result = await _dishService.GetAll(restaurantId);
+
+            return Ok(result);
         }
     }
 }

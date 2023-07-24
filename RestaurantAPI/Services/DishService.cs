@@ -20,7 +20,7 @@ namespace RestaurantAPI.Services
 
         public async Task<DishDto> GetDishById(int restaurantId, int dishId)
         {
-            var restaurant = _dbContext.Restaurants.FirstOrDefault(i => i.Id == restaurantId);
+            var restaurant = GetRestaurantById(restaurantId);
 
             if (restaurant == null)
             {
@@ -40,9 +40,7 @@ namespace RestaurantAPI.Services
 
         public async Task<List<DishDto>> GetAll(int restaurantId)
         {
-            var restaurant = await _dbContext.Restaurants
-                .Include(r=>r.Dishes)
-                .FirstOrDefaultAsync(i => i.Id == restaurantId);
+            var restaurant = GetRestaurantById(restaurantId);
 
             if (restaurant == null)
             {
@@ -56,7 +54,7 @@ namespace RestaurantAPI.Services
 
         public async Task<int> Create(int restaurantId, CreateDishDto dto)
         {
-            var restaurant =_dbContext.Restaurants.FirstOrDefault(i=>i.Id == restaurantId);
+            var restaurant = GetRestaurantById(restaurantId);
 
             if (restaurant == null)
             {
@@ -71,6 +69,26 @@ namespace RestaurantAPI.Services
             await _dbContext.SaveChangesAsync();
 
             return dishEntity.Id;
+        }
+
+        public async Task RemoveAll(int restaurantId)
+        {
+            var restaurant = GetRestaurantById(restaurantId);
+
+            _dbContext.RemoveRange(restaurant.Dishes);
+            await _dbContext.SaveChangesAsync();
+        }
+
+        private Restaurant GetRestaurantById(int id)
+        {
+            var restaurant = _dbContext.Restaurants
+                .Include(r => r.Dishes)
+                .FirstOrDefault(i => i.Id == id);
+
+            if (restaurant == null)
+                throw new NotFoundException("Restaurant not found");
+
+            return restaurant;
         }
     }
 }

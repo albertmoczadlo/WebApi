@@ -38,5 +38,11 @@ namespace RestaurantAPI.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromBody] int restaurantId)
+        {
+            _dishService.RemoveAll(restaurantId);
+        }
     }
 }
